@@ -10,27 +10,28 @@ public class ArrayManager {
     setData(initialData);
   }
 
-  // Methode zum Registrieren eines Listeners
+  // Register a listener
   public void addArrayChangeListener(ArrayChangeListener listener) {
     listeners.add(listener);
   }
 
-  // Methode zum Entfernen eines Listeners
+  // Remove a listener
   public void removeArrayChangeListener(ArrayChangeListener listener) {
     listeners.remove(listener);
   }
 
-  // Methode zum Setzen eines neuen Arrays
+  // Set a new array and notify listeners
   public void setData(int[] newData) {
     this.data = newData;
     notifyListeners();
   }
 
+  // Update an element at a specific index and notify listeners
   public void setIndex(int index, int value) {
     data[index] = value;
     notifyListeners(index);
     try {
-      Thread.sleep(0, 0); // delay in milliseconds
+      Thread.sleep(0, 0); // delay in nanoseconds
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
@@ -40,14 +41,14 @@ public class ArrayManager {
     return data;
   }
 
-  // Benachrichtige alle Listener
+  // Notify all listeners of a change in the array
   private void notifyListeners() {
     for (ArrayChangeListener listener : listeners) {
       listener.onArrayChanged(data);
     }
   }
 
-  // Benachrichtige alle Listener mit optionalem Index
+  // Notify all listeners of a change at a specific index
   private void notifyListeners(int index) {
     for (ArrayChangeListener listener : listeners) {
       listener.onArrayChanged(data, index);

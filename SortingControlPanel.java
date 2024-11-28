@@ -12,24 +12,18 @@ public class SortingControlPanel extends JPanel {
     setBackground(new Color(30, 30, 30));
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(10, 10, 20, 10);
-    gbc.gridx = 0;
-    gbc.gridy = GridBagConstraints.RELATIVE;
     gbc.anchor = GridBagConstraints.CENTER;
 
-    // ComboBox for sorting algorithm selection
     String[] algorithms = { "Bubble Sort", "Quick Sort", "Merge Sort" };
     JComboBox<String> algorithmComboBox = new JComboBox<>(algorithms);
     algorithmComboBox.setBackground(new Color(30, 30, 30));
     algorithmComboBox.setForeground(Color.WHITE);
     algorithmComboBox.setBorder(BorderFactory.createEmptyBorder());
 
-    // Adjust GridBagConstraints for ComboBox
     gbc.gridx = 0;
     gbc.gridy = 0;
-    gbc.anchor = GridBagConstraints.CENTER;
     add(algorithmComboBox, gbc);
 
-    // Start Sorting Button
     JButton startSortingButton = createButton("Start Sorting");
     startSortingButton.addActionListener(e -> {
       startSorting(
@@ -39,10 +33,7 @@ public class SortingControlPanel extends JPanel {
       );
     });
 
-    // Adjust GridBagConstraints for Button
     gbc.gridx = 1;
-    gbc.gridy = 0;
-    gbc.anchor = GridBagConstraints.CENTER;
     add(startSortingButton, gbc);
   }
 
@@ -69,31 +60,26 @@ public class SortingControlPanel extends JPanel {
     algorithmComboBox.setEnabled(false);
 
     Runnable sortingTask = () -> {
-      try {
-        if ("Bubble Sort".equals(algorithm)) {
-          BubbleSort bubbleSort = new BubbleSort(arrayManager);
-          bubbleSort.sort();
-        } else if ("Quick Sort".equals(algorithm)) {
-          QuickSort quickSort = new QuickSort(arrayManager);
-          quickSort.sort();
-        } else if ("Merge Sort".equals(algorithm)) {
-          MergeSort mergeSort = new MergeSort(arrayManager);
-          mergeSort.sort();
-        }
-        // Sorting logic will go here based on selected algorithm
-        System.out.println("Start sorting with: " + algorithm);
-      } finally {}
+      if ("Bubble Sort".equals(algorithm)) {
+        new BubbleSort(arrayManager).sort();
+      } else if ("Quick Sort".equals(algorithm)) {
+        new QuickSort(arrayManager).sort();
+      } else if ("Merge Sort".equals(algorithm)) {
+        new MergeSort(arrayManager).sort();
+      }
     };
 
     Thread sortingThread = new Thread(sortingTask);
     sortingThread.start();
+
     ArrayChangeAdapter myArrayChangeAdapter = new ArrayChangeAdapter() {
       public void onArrayChanged(int[] newData) {
-        System.out.println("Array changed");
         if (!sortingThread.isAlive()) {
-          startSortingButton.setEnabled(true);
-          algorithmComboBox.setEnabled(true);
-          arrayManager.removeArrayChangeListener(this);
+          SwingUtilities.invokeLater(() -> {
+            startSortingButton.setEnabled(true);
+            algorithmComboBox.setEnabled(true);
+            arrayManager.removeArrayChangeListener(this);
+          });
         }
       }
     };
