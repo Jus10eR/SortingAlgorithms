@@ -31,9 +31,13 @@ public class SortingControlPanel extends JPanel {
 
     // Start Sorting Button
     JButton startSortingButton = createButton("Start Sorting");
-    startSortingButton.addActionListener(e ->
-      startSorting(algorithmComboBox.getSelectedItem().toString())
-    );
+    startSortingButton.addActionListener(e -> {
+      startSorting(
+        algorithmComboBox.getSelectedItem().toString(),
+        startSortingButton,
+        algorithmComboBox
+      );
+    });
 
     // Adjust GridBagConstraints for Button
     gbc.gridx = 1;
@@ -56,13 +60,44 @@ public class SortingControlPanel extends JPanel {
     return button;
   }
 
-  private void startSorting(String algorithm) {
-    if ("Bubble Sort".equals(algorithm)) {
-      System.out.println("Bubble Sort selected");
-      BubbleSort bubbleSort = new BubbleSort(arrayManager);
-      new Thread(bubbleSort::sort).start();
-    }
-    // Sorting logic will go here based on selected algorithm
-    System.out.println("Start sorting with: " + algorithm);
+  private void startSorting(
+    String algorithm,
+    JButton startSortingButton,
+    JComboBox<String> algorithmComboBox
+  ) {
+    startSortingButton.setEnabled(false);
+    algorithmComboBox.setEnabled(false);
+
+    Runnable sortingTask = () -> {
+      try {
+        if ("Bubble Sort".equals(algorithm)) {
+          BubbleSort bubbleSort = new BubbleSort(arrayManager);
+          bubbleSort.sort();
+        } else if ("Quick Sort".equals(algorithm)) {
+          QuickSort quickSort = new QuickSort(arrayManager);
+          quickSort.sort();
+        } else if ("Merge Sort".equals(algorithm)) {
+          MergeSort mergeSort = new MergeSort(arrayManager);
+          mergeSort.sort();
+        }
+        // Sorting logic will go here based on selected algorithm
+        System.out.println("Start sorting with: " + algorithm);
+      } finally {}
+    };
+
+    Thread sortingThread = new Thread(sortingTask);
+    sortingThread.start();
+    ArrayChangeAdapter myArrayChangeAdapter = new ArrayChangeAdapter() {
+      @Overrride
+      public void onArrayChanged(int[] newData) {
+        System.out.println("Array changed");
+        if (!sortingThread.isAlive()) {
+          startSortingButton.setEnabled(true);
+          algorithmComboBox.setEnabled(true);
+          arrayManager.removeArrayChangeListener(this);
+        }
+      }
+    };
+    arrayManager.addArrayChangeListener(myArrayChangeAdapter);
   }
 }

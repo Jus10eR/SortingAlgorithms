@@ -5,6 +5,7 @@ public class ArrayControlPanel extends JPanel {
 
   private final ArrayManager arrayManager;
   private JSlider sizeSlider;
+  private JTextField arraySizeField;
   private final int sizeSliderMaxValue = 1000;
 
   public ArrayControlPanel(ArrayManager arrayManager) {
@@ -28,7 +29,7 @@ public class ArrayControlPanel extends JPanel {
     sizeSlider.setPaintLabels(true);
 
     // Number input for array size
-    JTextField arraySizeField = new JTextField("10");
+    arraySizeField = new JTextField("10");
     arraySizeField.setColumns(5);
 
     sizeSlider.addChangeListener(e -> {
@@ -41,6 +42,14 @@ public class ArrayControlPanel extends JPanel {
     });
 
     arraySizeField.addActionListener(e -> {
+      try {
+        int size = Integer.parseInt(arraySizeField.getText());
+        if (size < 2) {
+          arraySizeField.setText("2");
+        }
+      } catch (NumberFormatException ex) {
+        arraySizeField.setText(String.valueOf(sizeSlider.getValue()));
+      }
       int size = Integer.parseInt(arraySizeField.getText());
       sizeSlider.setValue(size);
       updateArraySize(size);
@@ -75,18 +84,15 @@ public class ArrayControlPanel extends JPanel {
   }
 
   private void generateRandomArray() {
-    int size = sizeSlider.getValue();
-    int[] data = new int[size];
-    for (int i = 0; i < data.length; i++) {
-      data[i] = (int) (Math.random() * 1000 + 1);
-    }
-    arrayManager.setData(data);
+    int size = Integer.parseInt(arraySizeField.getText());
+    sizeSlider.setValue(size);
+    updateArraySize(size);
   }
 
   private void updateArraySize(int size) {
     int[] data = new int[size];
     for (int i = 0; i < data.length; i++) {
-      data[i] = (int) (Math.random() * 100 + 1);
+      data[i] = (int) (Math.random() * 1000000 + 1);
     }
     arrayManager.setData(data);
   }
