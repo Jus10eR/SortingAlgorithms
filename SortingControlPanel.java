@@ -88,7 +88,6 @@ public class SortingControlPanel extends JPanel {
     Thread sortingThread = new Thread(sortingTask);
     sortingThread.start();
     ArrayChangeAdapter myArrayChangeAdapter = new ArrayChangeAdapter() {
-      @Overrride
       public void onArrayChanged(int[] newData) {
         System.out.println("Array changed");
         if (!sortingThread.isAlive()) {
