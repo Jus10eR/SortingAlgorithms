@@ -4,6 +4,7 @@ import javax.swing.*;
 public class SortingControlPanel extends JPanel {
 
   private final ArrayManager arrayManager;
+  protected Thread sortingThread;
 
   public SortingControlPanel(ArrayManager arrayManager) {
     this.arrayManager = arrayManager;
@@ -69,7 +70,7 @@ public class SortingControlPanel extends JPanel {
       }
     };
 
-    Thread sortingThread = new Thread(sortingTask);
+    sortingThread = new Thread(sortingTask);
     sortingThread.start();
 
     ArrayChangeAdapter myArrayChangeAdapter = new ArrayChangeAdapter() {

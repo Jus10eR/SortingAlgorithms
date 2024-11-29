@@ -30,8 +30,9 @@ class MainFrame extends JFrame {
 
     // Create GraphPanel and ArrayControlPanel
     graphPanel = new GraphPanel(arrayManager);
-    arrayControlPanel = new ArrayControlPanel(arrayManager);
     sortingControlPanel = new SortingControlPanel(arrayManager);
+    arrayControlPanel =
+      new ArrayControlPanel(arrayManager, sortingControlPanel);
 
     add(graphPanel, BorderLayout.CENTER);
     add(arrayControlPanel, BorderLayout.NORTH);

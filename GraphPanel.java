@@ -61,6 +61,7 @@ public class GraphPanel extends JPanel {
     );
   }
 
+  @SuppressWarnings("unused")
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);

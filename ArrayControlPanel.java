@@ -4,12 +4,17 @@ import javax.swing.*;
 public class ArrayControlPanel extends JPanel {
 
   private final ArrayManager arrayManager;
+  private final SortingControlPanel sortingControlPanel;
   private JSlider sizeSlider;
   private JTextField arraySizeField;
   private final int sizeSliderMaxValue = 1000;
 
-  public ArrayControlPanel(ArrayManager arrayManager) {
+  public ArrayControlPanel(
+    ArrayManager arrayManager,
+    SortingControlPanel sortingControlPanel
+  ) {
     this.arrayManager = arrayManager;
+    this.sortingControlPanel = sortingControlPanel;
 
     setLayout(new GridBagLayout());
     setBackground(new Color(30, 30, 30)); // Match GraphPanel background color
@@ -90,6 +95,10 @@ public class ArrayControlPanel extends JPanel {
   }
 
   private void updateArraySize(int size) {
+    if (
+      sortingControlPanel.sortingThread != null &&
+      sortingControlPanel.sortingThread.isAlive()
+    ) return;
     int[] data = new int[size];
     for (int i = 0; i < data.length; i++) {
       data[i] = (int) (Math.random() * 1000000 + 1);
